@@ -1,6 +1,14 @@
 # DVR Scan
 
 
+
+##
+
+```bash
+
+flask --app dvr_scan/ init-db
+flask --app dvr_scan/ run -p 7777 --debug
+```
 ## Final project fs
 
 ```

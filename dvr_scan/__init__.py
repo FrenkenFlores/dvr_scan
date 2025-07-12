@@ -1,7 +1,8 @@
 import os
 
-from flask import Flask
-from .db import close_db, init_db_command
+from flask import Flask, render_template
+from dvr_scan.db import close_db, init_db_command
+import dvr_scan.auth
 
 def init_app(app):
     app.teardown_appcontext(close_db)
@@ -34,10 +35,11 @@ def create_app(test_config=None):
         pass
 
     # a simple page that says hello
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
+    @app.route('/')
+    def index():
+        return render_template("index.html")
 
 
     init_app(app)
+    app.register_blueprint(dvr_scan.auth.bp)
     return app
