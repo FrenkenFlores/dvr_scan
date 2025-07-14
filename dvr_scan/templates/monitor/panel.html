@@ -1,13 +1,27 @@
+{% extends 'base.html' %}
+
+{% block search %}
+<form class="d-flex" role="search" method="post">
+    <input name="camera_id" class="form-control me-2" type="search" placeholder="Search by ID" aria-label="Search"/>
+    <input class="btn btn-outline-success" type="submit" value="Search">
+</form>
+{% endblock %}
 {% block content %}
 <h1>
     Main panel
 </h1>
-{% for camera_idx in cameras %}
-<div>
-    <div id="video-container">
-        <img src="{{ url_for('monitor.video_feed', camera_id=cameras[camera_idx].id) }}" width="{{ cameras[camera_idx].width }}" height="{{ cameras[camera_idx].height }}">
+<div class="mb-3">
+    {% for camera_idx in cameras %}
+    <div class="card m-1" style="width: 40%;">
+        <img class="img-fluid" src="{{ url_for('monitor.video_feed', camera_id=cameras[camera_idx]['id']) }}" width="{{ cameras[camera_idx].width }}" height="{{ cameras[camera_idx].height }}">
+        <div class="card-body">
+            <h5 class="card-title">id: {{ cameras[camera_idx]['id'] }}</h5>
+            <a href="{{ cameras[camera_idx]['id'] }}" class="btn btn-primary">Select</a>
+        </div>
     </div>
-
+    {% endfor %}
 </div>
-{% endfor %}
 {% endblock %}
+
+
+
