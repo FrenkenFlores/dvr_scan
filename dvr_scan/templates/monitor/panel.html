@@ -1,0 +1,13 @@
+{% block content %}
+<h1>
+    Main panel
+</h1>
+{% for camera_idx in cameras %}
+<div>
+    <div id="video-container">
+        <img src="{{ url_for('monitor.video_feed', camera_id=cameras[camera_idx].id) }}" width="{{ cameras[camera_idx].width }}" height="{{ cameras[camera_idx].height }}">
+    </div>
+
+</div>
+{% endfor %}
+{% endblock %}

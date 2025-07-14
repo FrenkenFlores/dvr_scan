@@ -3,6 +3,7 @@ import os
 from flask import Flask, render_template
 from dvr_scan.db import close_db, init_db_command
 import dvr_scan.auth
+import dvr_scan.monitor
 
 def init_app(app):
     app.teardown_appcontext(close_db)
@@ -42,4 +43,5 @@ def create_app(test_config=None):
 
     init_app(app)
     app.register_blueprint(dvr_scan.auth.bp)
+    app.register_blueprint(dvr_scan.monitor.bp)
     return app
