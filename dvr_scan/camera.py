@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import cv2
 import time
-import threading
+import re
 
 
 # Boundary for multipart response
@@ -12,11 +12,12 @@ MAX_RETRIES = 5
 @dataclass
 class Camera:
     id: int
-    width: int = 500
-    height: int = 500
+    width: int = 640
+    height: int = 480
+    framerate: str = "30/1"
     pipeline: str = (
         "videotestsrc ! "
-        f"video/x-raw, width={width}, height={height}, framerate=30/1 ! "
+        f"video/x-raw, width={width}, height={height}, framerate={framerate} ! "
         "videoconvert ! "
         "appsink"
     )
@@ -25,6 +26,10 @@ class Camera:
         self.stream = cv2.VideoCapture(self.pipeline, cv2.CAP_GSTREAMER)
         if not self.stream.isOpened():  # ← Critical check!
             raise RuntimeError(f"Failed to open GStreamer pipeline: {self.pipeline}")
+        # Update metadata for the custom pipelines
+        self.width = int(re.search(r'width=[0-9]+', self.pipeline).group().split("=")[-1])
+        self.height = int(re.search(r'height=[0-9]+', self.pipeline).group().split("=")[-1])
+        self.framerate = str(re.search(r'framerate=[0-9]+/[0-9]+', self.pipeline).group().split("=")[-1])
 
     def __del__(self):
         if self.stream is not None:

@@ -22,7 +22,15 @@ def monitor_page(page_number: int):
         db = get_db()
         camera_data = db.execute("SELECT * FROM camera").fetchall()
         db.close()
-        cameras = [{'id': c['id'], 'width': c['width'], 'height': c['height'], 'pipeline': c['pipeline']} for c in camera_data]
+        cameras = [
+            {
+                'id': c['id'],
+                'width': c['width'],
+                'height': c['height'],
+                'framerate': c['framerate'],
+                'pipeline': c['pipeline']
+            } for c in camera_data
+        ]
         n = PAGINATION * page_number
         n_1 = n - PAGINATION
         return render_template("/monitor/panel.html", cameras=cameras[n_1:n], current_page_number=page_number, max_pages=len(cameras) // PAGINATION)
@@ -41,8 +49,9 @@ def monitor_camera(camera_id: int):
         return render_template(
             "/monitor/camera.html", camera=Camera(
                 id=camera_data["id"],
-                width=camera_data["width"] * 10,
-                height=camera_data["height"] * 10,
+                width=camera_data["width"],
+                height=camera_data["height"],
+                framerate=camera_data["framerate"]
                 pipeline=camera_data["pipeline"]
             )
         )
@@ -62,6 +71,7 @@ def video_feed(camera_id: int):
             id=camera_data["id"],
             width=camera_data["width"],
             height=camera_data["height"],
+            framerate=camera_data["framerate"],
             pipeline=camera_data["pipeline"]
         ).get_frames(),
         mimetype=f'multipart/x-mixed-replace; boundary={BOUNDARY}'
