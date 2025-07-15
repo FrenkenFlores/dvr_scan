@@ -64,7 +64,26 @@ def monitor():
     if request.method == "GET":
         return render_template("/monitor/panel.html", cameras=cameras)
     elif request.method == "POST":
-        return render_template("/monitor/panel.html", cameras={c: cameras[c] for c in cameras if cameras[c]["id"] == int(request.form.get("camera_id"))})
+        return render_template(
+            "/monitor/panel.html",
+            cameras={
+                c: cameras[c] for c in cameras
+                if cameras[c]["id"] == int(request.form.get("camera_id"))
+            }
+        )
+
+
+@bp.route("/<int:camera_id>", methods=["GET"])
+@login_required
+def monitor_camera(camera_id: int):
+    return render_template(
+        "/monitor/camera.html", camera=Camera(
+            id=cameras[camera_id]["id"],
+            width=cameras[camera_id]["width"] * 10,
+            height=cameras[camera_id]["height"] * 10,
+            pipeline=cameras[camera_id]["pipeline"]
+        )
+    )
 
 
 @bp.route('/video_feed/', methods=["GET"])

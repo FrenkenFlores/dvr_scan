@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>
+    Monitor camera
+</h1>
+<div class="container mb-4">
+    <div class="card m-1" style="width: 100%;">
+        <div class="card-body">
+            <h5 class="card-title">id: {{ camera.id }}</h5>
+        </div>
+        <img class="img-fluid" src="{{ url_for('monitor.video_feed', camera_id=camera.id) }}" width="{{ camera.width }}" height="{{ camera.height }}">
+    </div>
+</div>
+{% endblock %}
+
+
+

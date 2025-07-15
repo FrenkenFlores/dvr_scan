@@ -5,6 +5,7 @@ from dvr_scan.db import close_db, init_db_command
 import dvr_scan.auth
 import dvr_scan.monitor
 
+
 def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)

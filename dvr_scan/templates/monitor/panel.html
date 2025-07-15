@@ -16,7 +16,7 @@
         <img class="img-fluid" src="{{ url_for('monitor.video_feed', camera_id=cameras[camera_idx]['id']) }}" width="{{ cameras[camera_idx].width }}" height="{{ cameras[camera_idx].height }}">
         <div class="card-body">
             <h5 class="card-title">id: {{ cameras[camera_idx]['id'] }}</h5>
-            <a href="{{ cameras[camera_idx]['id'] }}" class="btn btn-primary">Select</a>
+            <a href="{{ url_for('monitor.monitor_camera', camera_id=cameras[camera_idx]['id']) }}" class="btn btn-success">Select</a>
         </div>
     </div>
     {% endfor %}
