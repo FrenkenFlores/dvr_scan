@@ -10,7 +10,7 @@
   <body class="container">
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/">
+        <a class="navbar-brand" href="{{ url_for('index') }}">
             <img src="{{ url_for('static', filename='logo.png') }}" alt="Bootstrap" width="100">
         </a>
         
@@ -28,13 +28,13 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/">Home</a>
+                    <a class="nav-link active" aria-current="page" href="{{ url_for('index') }}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/monitor">Monitor</a>
+                    <a class="nav-link" href="{{ url_for('monitor.monitor') }}">Monitor</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Logs</a>
+                    <a class="nav-link" href="{{ url_for('logs.logs') }}">Logs</a>
                 </li>
             </ul>
             

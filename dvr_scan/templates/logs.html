@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-4">
+    <h1 class="mb-4">Logs</h1>
+    <div class="list-group">
+        {% for log in logs %}
+        <div class="list-group-item list-group-item-action mb-2 rounded shadow-sm">
+            <div class="d-flex w-100 justify-content-between align-items-center">
+                <div>
+                    <h5 class="mb-1">{{ log["title"] }}</h5>
+                    <h6 class="mb-1 text-muted">{{ log["type"] }}</h6>
+                </div>
+                <small class="text-nowrap">{{ log["time"] }}</small>
+            </div>
+            <p class="mb-1 mt-2">{{ log["description"] }}</p>
+            <small class="text-muted">Camera ID: {{ log["camera_id"] }}</small>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
