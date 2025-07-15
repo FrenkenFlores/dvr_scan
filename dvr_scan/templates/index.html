@@ -1,7 +1,87 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>
-    Hello world!
-</h1>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto text-center">
+            <h1 class="display-4 mb-4">DVR Scan Platform</h1>
+            <p class="lead">
+                Advanced digital camera monitoring and analytics web platform
+            </p>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="card-title text-success">Real-time Monitoring</h3>
+                    <p class="card-text">
+                        <i class="fas fa-video fa-2x mb-3"></i><br>
+                        View live feeds from all connected cameras with low-latency streaming.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="card-title text-success">Motion Detection</h3>
+                    <p class="card-text">
+                        <i class="fas fa-running fa-2x mb-3"></i><br>
+                        Advanced algorithms detect and alert on suspicious movements and activities.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="card-title text-success">Loging system</h3>
+                    <p class="card-text">
+                        <i class="fas fa-database fa-2x mb-3"></i><br>
+                        Detailed records about real-time events.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <h2><i class="fas fa-cogs mr-2"></i>System Features</h2>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Multi-camera support</li>
+                <li class="list-group-item">Cross-platform web access</li>
+                <li class="list-group-item">User permission management</li>
+                <li class="list-group-item">Records storage</li>
+                <li class="list-group-item">Events statistics</li>
+            </ul>
+        </div>
+
+        <div class="col-md-6">
+            <h2><i class="fas fa-shield-alt mr-2"></i>Security Benefits</h2>
+            <div class="alert alert-info">
+                <strong>24/7 Protection</strong> - Continuous monitoring of your premises
+            </div>
+            <div class="alert alert-success">
+                <strong>Forensic Analysis</strong> - Detailed event timeline reconstruction
+            </div>
+            <div class="alert alert-warning">
+                <strong>Instant Alerts</strong> - Get notified of security events
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-5 mb-5">
+        <a href="#" class="btn btn-success btn-lg mr-3">
+            <i class="fas fa-sign-in-alt"></i> Read logs
+        </a>
+        <a href="{{ url_for('monitor.monitor') }}" class="btn btn-success btn-lg">
+            <i class="fas fa-tv"></i> Monitor
+        </a>
+    </div>
+</div>
 {% endblock %}

@@ -22,21 +22,18 @@ class Camera:
     )
     stream: cv2.VideoCapture = None
     def __post_init__(self):
-        print("UUUUUUUUUUUUUUUUUUU")
         self.stream = cv2.VideoCapture(self.pipeline, cv2.CAP_GSTREAMER)
         if not self.stream.isOpened():  # ← Critical check!
             raise RuntimeError(f"Failed to open GStreamer pipeline: {self.pipeline}")
 
     def __del__(self):
         if self.stream is not None:
-            print("XXXXXXXXXXXXXXXXXX")
             self.stream.release()
 
     def get_frames(self):
         retry_count = 0
         last_frame_time = time.time()
         while self.stream.isOpened():
-            print("XXXXXXXXXXXXXXXXXXXXXXX")
         # Timeout check (1 second per frame max)
             if time.time() - last_frame_time > 1.0:
                 retry_count += 1

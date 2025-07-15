@@ -14,7 +14,7 @@
         <div class="card-body">
             <h5 class="card-title">id: {{ camera.id }}</h5>
         </div>
-        <img class="img-fluid" src="{{ url_for('monitor.video_feed', camera_id=camera.id) }}" width="{{ camera.width }}" height="{{ camera.height }}">
+        <img class="img-fluid" src="{{ url_for('monitor.video_feed', camera_id=camera.id) }}">
     </div>
 </div>
 {% endblock %}
