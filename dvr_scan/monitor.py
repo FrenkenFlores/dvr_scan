@@ -1,102 +1,68 @@
 from dvr_scan.auth import login_required
-from flask import Blueprint, render_template, Response, request
+from flask import Blueprint, render_template, Response, request, redirect, url_for, abort
 from .camera import Camera, BOUNDARY
-from collections import namedtuple
+from .db import get_db
 
-cameras = {
-    # 0: dict(id=0, width=640, height=480, pipeline=(
-    #     "uridecodebin uri=https://gstreamer.freedesktop.org/data/media/sintel_trailer-480p.webm ! "
-    #     "queue ! "
-    #     "videoscale ! "
-    #     "video/x-raw, width=640, height=480 ! "
-    #     "videoconvert ! "
-    #     "appsink"
-    # )),
-    # 1: dict(id=1, width=640, height=480, pipeline=(
-    #     "v4l2src ! "
-    #     "video/x-raw, width=640, height=480, framerate=30/1 ! "
-    #     "videoconvert ! "
-    #     "appsink"
-    # )),
-    # 2: dict(id=2, width=640, height=480, pipeline=(
-    #     "souphttpsrc location=http://pendelcam.kip.uni-heidelberg.de/mjpg/video.mjpg ! "
-    #     "jpegdec ! "
-    #     "videoconvert ! "
-    #     "appsink"
-    # )),
-    3: dict(id=3, width=640, height=480, pipeline=(
-        "videotestsrc pattern=0 ! "
-        "video/x-raw, width=640, height=480, framerate=30/1 ! "
-        "videoconvert ! "
-        "appsink"
-    )),
-    4: dict(id=4, width=640, height=480, pipeline=(
-        "videotestsrc pattern=0 ! "
-        "video/x-raw, width=640, height=480, framerate=30/1 ! "
-        "videoconvert ! "
-        "appsink"
-    )),
-    5: dict(id=5, width=640, height=480, pipeline=(
-        "videotestsrc pattern=0 ! "
-        "video/x-raw, width=640, height=480, framerate=30/1 ! "
-        "videoconvert ! "
-        "appsink"
-    )),
-    6: dict(id=5, width=640, height=480, pipeline=(
-        "videotestsrc pattern=0 ! "
-        "video/x-raw, width=640, height=480, framerate=30/1 ! "
-        "videoconvert ! "
-        "appsink"
-    )),
-    7: dict(id=5, width=640, height=480, pipeline=(
-        "videotestsrc pattern=0 ! "
-        "video/x-raw, width=640, height=480, framerate=30/1 ! "
-        "videoconvert ! "
-        "appsink"
-    )),
-}
 
+# The number of cameras on each page
+PAGINATION = 2
 bp = Blueprint("monitor", __name__, url_prefix="/monitor")
+
 
 @bp.route("/", methods=["GET", "POST"])
 @login_required
 def monitor():
+    return redirect(url_for("monitor.monitor_page", page_number=1))
+
+
+@bp.route("/<int:page_number>", methods=["GET", "POST"])
+@login_required
+def monitor_page(page_number: int):
     if request.method == "GET":
-        return render_template("/monitor/panel.html", cameras=cameras)
+        db = get_db()
+        camera_data = db.execute("SELECT * FROM camera").fetchall()
+        db.close()
+        cameras = [{'id': c['id'], 'width': c['width'], 'height': c['height'], 'pipeline': c['pipeline']} for c in camera_data]
+        n = PAGINATION * page_number
+        n_1 = n - PAGINATION
+        return render_template("/monitor/panel.html", cameras=cameras[n_1:n], current_page_number=page_number, max_pages=len(cameras) // PAGINATION)
     elif request.method == "POST":
-        return render_template(
-            "/monitor/panel.html",
-            cameras={
-                c: cameras[c] for c in cameras
-                if cameras[c]["id"] == int(request.form.get("camera_id"))
-            }
-        )
+        return redirect(url_for("monitor.monitor_camera", camera_id=int(request.form.get("camera_id"))))
 
-
-@bp.route("/<int:camera_id>", methods=["GET"])
+@bp.route("/camera/<int:camera_id>", methods=["GET", "POST"])
 @login_required
 def monitor_camera(camera_id: int):
-    return render_template(
-        "/monitor/camera.html", camera=Camera(
-            id=cameras[camera_id]["id"],
-            width=cameras[camera_id]["width"] * 10,
-            height=cameras[camera_id]["height"] * 10,
-            pipeline=cameras[camera_id]["pipeline"]
+    if request.method == "GET":
+        db = get_db()
+        camera_data = db.execute("SELECT * FROM camera WHERE id = :camera_id", {"camera_id": camera_id}).fetchone()
+        db.close()
+        if not camera_data:
+            return render_template("error.html"), 404
+        return render_template(
+            "/monitor/camera.html", camera=Camera(
+                id=camera_data["id"],
+                width=camera_data["width"] * 10,
+                height=camera_data["height"] * 10,
+                pipeline=camera_data["pipeline"]
+            )
         )
-    )
+    elif request.method == "POST":
+        return redirect(url_for("monitor.monitor_camera", camera_id=int(request.form.get("camera_id"))))
 
 
-@bp.route('/video_feed/', methods=["GET"])
-def video_feed():
-    camera_id = request.args.get('camera_id', None)
-    if not camera_id or int(camera_id) not in cameras:
+@bp.route('/video_feed/<int:camera_id>', methods=["GET"])
+def video_feed(camera_id: int):
+    db = get_db()
+    camera_data = db.execute("SELECT * FROM camera WHERE id = :camera_id", {"camera_id": camera_id}).fetchone()
+    db.close()
+    if not camera_data:
         raise Exception("Error, camera is not selected")
     return Response(
         Camera(
-            id=cameras[int(camera_id)]["id"],
-            width=cameras[int(camera_id)]["width"],
-            height=cameras[int(camera_id)]["height"],
-            pipeline=cameras[int(camera_id)]["pipeline"]
+            id=camera_data["id"],
+            width=camera_data["width"],
+            height=camera_data["height"],
+            pipeline=camera_data["pipeline"]
         ).get_frames(),
         mimetype=f'multipart/x-mixed-replace; boundary={BOUNDARY}'
     )

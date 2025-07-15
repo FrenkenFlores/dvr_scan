@@ -11,17 +11,23 @@
     Main panel
 </h1>
 <div class="mb-3">
-    {% for camera_idx in cameras %}
+    {% for camera in cameras %}
     <div class="card m-1" style="width: 40%;">
-        <img class="img-fluid" src="{{ url_for('monitor.video_feed', camera_id=cameras[camera_idx]['id']) }}" width="{{ cameras[camera_idx].width }}" height="{{ cameras[camera_idx].height }}">
+        <img class="img-fluid" src="{{ url_for('monitor.video_feed', camera_id=camera['id']) }}" width="{{ camera.width }}" height="{{ camera.height }}">
         <div class="card-body">
-            <h5 class="card-title">id: {{ cameras[camera_idx]['id'] }}</h5>
-            <a href="{{ url_for('monitor.monitor_camera', camera_id=cameras[camera_idx]['id']) }}" class="btn btn-success">Select</a>
+            <h5 class="card-title">id: {{ camera['id'] }}</h5>
+            <a href="{{ url_for('monitor.monitor_camera', camera_id=camera['id']) }}" class="btn btn-success">Select</a>
         </div>
     </div>
     {% endfor %}
 </div>
+<div class="flex mb-3">
+    {% if current_page_number > 1 %}
+        <a class="btn btn-success" href="{{ url_for('monitor.monitor_page', page_number=current_page_number - 1) }}">Previous</a>
+    {% endif %}
+    {% if current_page_number < max_pages %}
+        <a class="btn btn-success" href="{{ url_for('monitor.monitor_page', page_number=current_page_number + 1) }}">Next</a>
+    {% endif %}
+</div>
 {% endblock %}
-
-
 

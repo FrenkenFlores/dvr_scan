@@ -81,7 +81,8 @@ flask --app dvr_scan/ run -p 7777 --debug
 ├── dvr_scan/
 │   ├── __init__.py
 │   ├── db.py
-│   ├── schema.sql
+│   ├── schema_init.sql
+│   ├── schema_fill.sql
 │   ├── auth.py
 │   ├── ui.py
 │   ├── templates/
