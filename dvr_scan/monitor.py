@@ -25,9 +25,6 @@ def monitor_page(page_number: int):
         cameras = [
             {
                 'id': c['id'],
-                'width': c['width'],
-                'height': c['height'],
-                'framerate': c['framerate'],
                 'pipeline': c['pipeline']
             } for c in camera_data
         ]
@@ -49,9 +46,6 @@ def monitor_camera(camera_id: int):
         return render_template(
             "/monitor/camera.html", camera=Camera(
                 id=camera_data["id"],
-                width=camera_data["width"],
-                height=camera_data["height"],
-                framerate=camera_data["framerate"]
                 pipeline=camera_data["pipeline"]
             )
         )
@@ -69,9 +63,6 @@ def video_feed(camera_id: int):
     return Response(
         Camera(
             id=camera_data["id"],
-            width=camera_data["width"],
-            height=camera_data["height"],
-            framerate=camera_data["framerate"],
             pipeline=camera_data["pipeline"]
         ).get_frames(),
         mimetype=f'multipart/x-mixed-replace; boundary={BOUNDARY}'

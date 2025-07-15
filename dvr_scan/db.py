@@ -30,22 +30,27 @@ def init_db():
     db = get_db()
 
     with current_app.open_resource('schema_init.sql') as f:
-        db.executescript(f.read().decode('utf8'))
+        cmd = f.read().decode('utf8')
+        db.executescript(cmd)
+        click.echo(cmd)
 
 
 def fill_db():
     db = get_db()
 
     with current_app.open_resource('schema_fill.sql') as f:
-        db.executescript(f.read().decode('utf8'))
-
+        cmd = f.read().decode('utf8')
+        db.executescript(cmd)
+        click.echo(cmd)
 
 # Call: flask --app dvr_scan/ init-db
 @click.command('init-db')
 def init_db_command():
     """Clear the existing data and create new tables."""
+    click.echo('Initializing the database.')
     init_db()
+    click.echo('Filling the database with data.')
     fill_db()
-    click.echo('Initialized the database.')
+    click.echo('Database is ready.')
 
 
