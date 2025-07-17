@@ -2,11 +2,31 @@ from dataclasses import dataclass
 import cv2
 import time
 import re
+import random
 
 
 # Boundary for multipart response
 BOUNDARY = "frame"
 MAX_RETRIES = 5
+
+
+def get_coordinates(camera_id):
+    objects = []
+    for i in range(3):
+        objects.append({
+            "type": "person",
+            "time": time.time(),
+            "camera_id": camera_id,
+            "coords": {
+                "centerX": random.randint(0, 640),
+                "centerY": random.randint(0, 480)
+            },
+            "title": "test",
+            "description": "test"
+        })
+    return objects
+
+
 
 
 @dataclass
@@ -54,6 +74,13 @@ class Camera:
                 continue
             retry_count = 0
             last_frame_time = time.time()
+            for obj in get_coordinates(self.id):
+                frame = cv2.rectangle(
+                    frame,
+                    (obj["coords"]["centerX"], obj["coords"]["centerY"]),
+                    (obj["coords"]["centerX"] + 50, obj["coords"]["centerY"] + 50),
+                    (255, 0, 0), 2
+                )
             # Encode frame as JPEG
             _, buffer = cv2.imencode('.jpg', frame)
             frame = buffer.tobytes()
