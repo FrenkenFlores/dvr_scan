@@ -5,28 +5,7 @@ import re
 import random
 
 
-# Boundary for multipart response
-BOUNDARY = "frame"
 MAX_RETRIES = 5
-
-
-def get_coordinates(camera_id):
-    objects = []
-    for i in range(3):
-        objects.append({
-            "type": "person",
-            "time": time.time(),
-            "camera_id": camera_id,
-            "coords": {
-                "centerX": random.randint(0, 640),
-                "centerY": random.randint(0, 480)
-            },
-            "title": "test",
-            "description": "test"
-        })
-    return objects
-
-
 
 
 @dataclass
@@ -42,14 +21,32 @@ class Camera:
         "appsink"
     )
     stream: cv2.VideoCapture = None
+
     def __post_init__(self):
         self.stream = cv2.VideoCapture(self.pipeline, cv2.CAP_GSTREAMER)
-        if not self.stream.isOpened():  # ← Critical check!
-            raise RuntimeError(f"Failed to open GStreamer pipeline: {self.pipeline}")
+        if not self.stream.isOpened():
+            print(f"Failed to open GStreamer pipeline: {self.pipeline}")
+            self.stream.release()
+            self.width = 0
+            self.height = 0
+            self.framerate = ""
+            self.pipeline = (
+                "videotestsrc ! "
+                f"video/x-raw, width={self.width}, height={self.height}, framerate={self.framerate} ! "
+                "videoconvert ! "
+                "appsink"
+            )
+            self.stream = cv2.VideoCapture(
+                self.pipeline,
+                cv2.CAP_GSTREAMER
+            )
         # Update metadata for the custom pipelines
-        self.width = int(re.search(r'width=[0-9]+', self.pipeline).group().split("=")[-1])
-        self.height = int(re.search(r'height=[0-9]+', self.pipeline).group().split("=")[-1])
-        self.framerate = str(re.search(r'framerate=[0-9]+/[0-9]+', self.pipeline).group().split("=")[-1])
+        if found := re.search(r'width=[0-9]+', self.pipeline):
+            self.width = int(found.group().split("=")[-1])
+        if found := re.search(r'height=[0-9]+', self.pipeline):
+            self.height = int(found.group().split("=")[-1])
+        if found := re.search(r'framerate=[0-9]+/[0-9]+', self.pipeline):
+            self.framerate = str(found.group().split("=")[-1])
 
     def __del__(self):
         if self.stream is not None:
@@ -74,18 +71,4 @@ class Camera:
                 continue
             retry_count = 0
             last_frame_time = time.time()
-            for obj in get_coordinates(self.id):
-                frame = cv2.rectangle(
-                    frame,
-                    (obj["coords"]["centerX"], obj["coords"]["centerY"]),
-                    (obj["coords"]["centerX"] + 50, obj["coords"]["centerY"] + 50),
-                    (255, 0, 0), 2
-                )
-            # Encode frame as JPEG
-            _, buffer = cv2.imencode('.jpg', frame)
-            frame = buffer.tobytes()
-            # Yield frame in MJPEG format
-            yield (
-                b'--' + f'{BOUNDARY}'.encode() + b'\r\n'
-                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n'
-            )
+            yield frame

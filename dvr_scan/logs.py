@@ -1,6 +1,5 @@
 from dvr_scan.auth import login_required
-from flask import Blueprint, render_template, Response, request, redirect, url_for, abort
-from .camera import Camera, BOUNDARY
+from flask import Blueprint, render_template
 from .db import get_db
 
 
