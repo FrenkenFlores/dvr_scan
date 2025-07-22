@@ -36,7 +36,6 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE \
     -D WITH_GSTREAMER=ON \
     -D BUILD_EXAMPLES=ON ..
 ```
-> The repo with the build can be deleted.
 
 ## virtual environment
 The builded version of OpenCV is installed globally, we must allow global modules:
@@ -58,14 +57,6 @@ apt install ffmpeg
 pytest tests/test_system.py
 ```
 
-
-
-
-
-
-
-
-
 ## Usage
 
 ```bash
@@ -73,41 +64,6 @@ pytest tests/test_system.py
 flask --app dvr_scan/ init-db
 flask --app dvr_scan/ run -p 7777 --debug
 ```
-## Final project fs
-
-```
-
-/home/user/Projects/dvr_scan
-├── dvr_scan/
-│   ├── __init__.py
-│   ├── db.py
-│   ├── schema_init.sql
-│   ├── schema_fill.sql
-│   ├── auth.py
-│   ├── ui.py
-│   ├── templates/
-│   │   ├── base.html
-│   │   ├── auth/
-│   │   │   ├── login.html
-│   │   │   └── register.html
-│   │   └── ui/
-│   │       ├── camera.html
-│   │       ├── logs.html
-│   └── static/
-│       └── style.css
-├── tests/
-│   ├── conftest.py
-│   ├── data.sql
-│   ├── test_factory.py
-│   ├── test_db.py
-│   ├── test_auth.py
-│   └── test_ui.py
-├── .venv/
-├── pyproject.toml
-└── MANIFEST.in
-
-```
-
 
 ## Streaming resources
 1. From file.
@@ -158,10 +114,6 @@ pipeline=(
     "appsink"
 )
 ```
-
-
-
-
 
 
 ## Resources

@@ -23,7 +23,7 @@ class ObjectsDetector:
             self.labels = [line.strip() for line in f.readlines()]
         self.net = cv2.dnn.readNetFromTensorflow(model, config)
 
-    def detect(self, frame, camera_id=0, threshold=0.25):
+    def detect(self, frame, camera_id=0, threshold=0.5):
         events = []
         blob = cv2.dnn.blobFromImage(frame, 1.0, (self.in_width, self.in_height), self.mean, crop=False, swapRB=True)
         self.net.setInput(blob)
