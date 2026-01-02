@@ -1,5 +1,27 @@
 # DVR Scan
 
+This is a university summer practice project developed in aerodynamics lab of a 
+company called Argus-IT. The main goal was to develop a platform to manage events from multiple
+drone cameras. The project is just an MVP that needs to be refactored and updated.
+
+## Libs
+Used Flask for the web backend, GStreamer as a backend for video player, bootstrap for
+frontend. For object detection we compile OpenCV locally to add GStreamer support. As a
+model for object detection we use one of the YOLO models.
+
+## Demo
+![dvr_scan_demo.gif](dvr_scan_demo.gif)
+### Authentication
+Basic authenticaion system with register/login/logut that blocks the user from reading or editing stream data.
+![auth.png](auth.png)
+### Log events on camera
+Event logs from all the cameras are provided in a separate page.
+![logs.png](logs.png)
+### Multiple camera support
+The platform can register multiple cameras and log there events.
+![cameras.png](cameras.png)
+### Search for a camera
+The platform also can find a camera by using the search bar.
 
 ## Compile OpenCV with Gstreamer
 
